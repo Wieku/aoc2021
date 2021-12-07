@@ -37,40 +37,30 @@ func p1() {
 }
 
 func p2() {
-	textO := make([]string, len(lines))
-	textS := make([]string, len(lines))
-
-	copy(textO, lines)
-	copy(textS, lines)
-
-	siz := len(lines[0])
-
-	for i := 0; i < siz && len(textO) > 1; i++ {
-		sieve := getSieve(textO, i)
-
-		for j := 0; j < len(textO) && len(textO) > 1; j++ {
-			if textO[j][i] != sieve {
-				textO = append(textO[:j], textO[j+1:]...)
-				j--
-			}
-		}
-	}
-
-	for i := 0; i < siz && len(textS) > 1; i++ {
-		sieve := getSieve(textS, i)
-
-		for j := 0; j < len(textS) && len(textS) > 1; j++ {
-			if textS[j][i] == sieve {
-				textS = append(textS[:j], textS[j+1:]...)
-				j--
-			}
-		}
-	}
-
-	g, _ := strconv.ParseInt(textO[0], 2, 64)
-	s, _ := strconv.ParseInt(textS[0], 2, 64)
+	g, _ := strconv.ParseInt(getLine(lines, false), 2, 64)
+	s, _ := strconv.ParseInt(getLine(lines, true), 2, 64)
 
 	fmt.Println(g * s)
+}
+
+func getLine(src []string, inverse bool) string {
+	vals := make([]string, len(src))
+	copy(vals, src)
+
+	siz := len(vals[0])
+
+	for i := 0; i < siz && len(vals) > 1; i++ {
+		sieve := getSieve(vals, i)
+
+		for j := 0; j < len(vals) && len(vals) > 1; j++ {
+			if (vals[j][i] == sieve) != inverse {
+				vals = append(vals[:j], vals[j+1:]...)
+				j--
+			}
+		}
+	}
+
+	return vals[0]
 }
 
 func getSieve(vals []string, x int) uint8 {
