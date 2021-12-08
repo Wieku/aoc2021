@@ -3,7 +3,7 @@ package main
 import (
 	"aoc2021/util"
 	"fmt"
-	"math"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -13,45 +13,48 @@ var lines = util.ReadLines("day7/input.txt")
 func main() {
 	start := strings.Split(lines[0], ",")
 
-	positions := make([]int, len(start))
+	l := len(start)
 
-	mx := 0
+	positions := make([]int, l)
+
+	mean := 0
 
 	for i, t := range start {
 		positions[i], _ = strconv.Atoi(t)
 
-		if positions[i] > mx {
-			mx = positions[i]
-		}
+		mean += positions[i]
 	}
 
-	fuel := make([]int, mx+1)
-	fuel2 := make([]int, mx+1)
+	mean /= l
 
-	for i := 0; i < len(fuel); i++ {
-		for j := 0; j < len(positions); j++ {
-			bFuel := abs(i - positions[j])
+	sort.Ints(positions)
 
-			fuel[i] += bFuel
-			fuel2[i] += bFuel * (bFuel + 1) / 2
-		}
+	median := (positions[(l-1)/2] + positions[l/2-1]) / 2
+
+	minFuel := 0
+
+	minFuel2L := 0
+	minFuel2U := 0
+
+	for i := 0; i < l; i++ {
+		bFuel := abs(median - positions[i])
+
+		bFuel2L := abs(positions[i] - mean)
+		bFuel2U := abs(positions[i] - (mean + 1))
+
+		minFuel += bFuel
+
+		minFuel2L += bFuel2L * (bFuel2L + 1) / 2
+		minFuel2U += bFuel2U * (bFuel2U + 1) / 2
 	}
 
-	minFuel := math.MaxInt
-	minFuel2 := math.MaxInt
+	fmt.Println("Part1:", minFuel)
 
-	for i := 0; i < len(fuel); i++ {
-		if fuel[i] < minFuel {
-			minFuel = fuel[i]
-		}
-
-		if fuel2[i] < minFuel2 {
-			minFuel2 = fuel2[i]
-		}
+	if minFuel2L > minFuel2U {
+		fmt.Println("Part2:", minFuel2U)
+	} else {
+		fmt.Println("Part2:", minFuel2L)
 	}
-
-	fmt.Println(minFuel)
-	fmt.Println(minFuel2)
 }
 
 func abs(a int) int {
