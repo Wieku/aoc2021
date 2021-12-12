@@ -16,7 +16,7 @@ type field struct {
 
 type board [bSize * bSize]field
 
-var lines = util.ReadLines("day4/input.txt")
+var lines = util.ReadLines("day04/input.txt")
 
 func main() {
 	var lastWon *board

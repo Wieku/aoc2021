@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day2/input.txt")
+var lines = util.ReadLines("day02/input.txt")
 
 func main() {
 	horiz := 0

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day7/input.txt")
+var lines = util.ReadLines("day07/input.txt")
 
 func main() {
 	start := strings.Split(lines[0], ",")
