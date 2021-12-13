@@ -67,7 +67,7 @@ func main() {
 			if _, ok := paper[vec{x, y}]; ok {
 				fmt.Print("#")
 			} else {
-				fmt.Print(".")
+				fmt.Print(" ")
 			}
 		}
 		fmt.Println()
