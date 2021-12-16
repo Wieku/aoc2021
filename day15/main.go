@@ -2,15 +2,39 @@ package main
 
 import (
 	"aoc2021/util"
+	"container/heap"
 	"fmt"
 	"math"
-	"sort"
 	"strconv"
 	"strings"
 )
 
 type vec struct {
-	y, x int
+	y, x, diff int
+}
+
+type PriorityQueue []vec
+
+func (pq PriorityQueue) Len() int { return len(pq) }
+
+func (pq PriorityQueue) Less(i, j int) bool {
+	return pq[i].diff < pq[j].diff
+}
+
+func (pq *PriorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	*pq = old[:n-1]
+	return item
+}
+
+func (pq *PriorityQueue) Push(x interface{}) {
+	*pq = append(*pq, x.(vec))
+}
+
+func (pq PriorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
 }
 
 var lines = util.ReadLines("day15/input.txt")
@@ -30,8 +54,6 @@ func init() {
 		data = append(data, n)
 	}
 }
-
-// VERY VERY SLOW BUT WORKS, DON'T JUDGE
 
 func main() {
 	fmt.Println("Part 1:", traverse(data))
@@ -68,13 +90,16 @@ func traverse(graph [][]int) int {
 
 	dists[0][0] = 0
 
-	stack := []vec{{0, 0}}
+	priorityQueue := make(PriorityQueue, 0)
 
-	for len(stack) > 0 {
-		el := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
+	heap.Init(&priorityQueue)
 
-		nds := []vec{{el.y - 1, el.x}, {el.y + 1, el.x}, {el.y, el.x - 1}, {el.y, el.x + 1}}
+	heap.Push(&priorityQueue, vec{0, 0, 0})
+
+	for len(priorityQueue) > 0 {
+		el := heap.Pop(&priorityQueue).(vec)
+
+		nds := []vec{{el.y - 1, el.x, 0}, {el.y + 1, el.x, 0}, {el.y, el.x - 1, 0}, {el.y, el.x + 1, 0}}
 
 		for _, n := range nds {
 			if !(n.y >= 0 && n.y <= dY-1 &&
@@ -86,15 +111,11 @@ func traverse(graph [][]int) int {
 
 			if cD < dists[n.y][n.x] {
 				dists[n.y][n.x] = cD
-				stack = append(stack, n)
+				n.diff = cD
+
+				heap.Push(&priorityQueue, n)
 			}
 		}
-
-		sort.Slice(stack, func(i, j int) bool {
-			v1 := stack[i]
-			v2 := stack[j]
-			return dists[v1.y][v1.x] > dists[v2.y][v2.x]
-		})
 	}
 
 	return dists[dY-1][dX-1]
