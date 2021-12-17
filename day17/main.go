@@ -39,14 +39,30 @@ func main() {
 }
 
 func p1() int {
-	maxEndVel := -minY - 1
-	return maxEndVel * (maxEndVel + 1) / 2
+	// Idea here is that no matter how y>0 we will shoot, the probe will always hit y=0 after some time
+
+	if minY > 0 { // If trench is completely above y=0, then difference between maxY and 0 is our highest achievable velocity
+		return maxY * (maxY + 1) / 2
+	} else if maxY < 0 { // If trench is completely below y=0, then velocity step before of difference between minY and 0 is our highest achievable velocity
+		maxEndVel := -minY - 1
+		return maxEndVel * (maxEndVel + 1) / 2
+	}
+
+	return math.MaxInt // Basically when trench contains y=0, then we can shoot infinitely high up
 }
 
 func p2() (count int) {
+	if minY <= 0 && 0 <= maxY {
+		return math.MaxInt // Basically when trench contains y=0, then we have infinite amount of shots
+	}
+
 	minVelY := minY
-	maxVelY := -minY - 1
 	maxVelX := maxX
+
+	maxVelY := -minY - 1
+	if minY > 0 { // If trench is completely above y=0, then difference between maxY and 0 is our highest achievable velocity
+		maxVelY = maxY
+	}
 
 	// Shortened quadratic equation solution to find x that x(x+1)/2 = minX,
 	//   then we ceil that x to get minimal velocity that terminal horizontal position is >= minX
