@@ -75,9 +75,7 @@ func parseNumber(inp string) (list []leaf) {
 	}
 
 	if currDepth < lastDepth {
-		l := list[len(list)-1]
-		l.jump = abs(currDepth - lastDepth)
-		list[len(list)-1] = l
+		list[len(list)-1].jump = abs(currDepth - lastDepth)
 	}
 
 	return
@@ -148,6 +146,7 @@ func reduce(in []leaf) (out []leaf) {
 	for processMore := true; processMore; {
 		processMore = false
 
+		// explode
 		for moreExplodes := true; moreExplodes; {
 			moreExplodes = false
 
@@ -189,6 +188,7 @@ func reduce(in []leaf) (out []leaf) {
 			}
 		}
 
+		// split
 		for i := 0; i < len(out); i++ {
 			l := out[i]
 
@@ -234,9 +234,7 @@ func magnitude(in []leaf) int {
 		out[i] = k
 	}
 
-	processMore := true
-
-	for processMore {
+	for processMore := true; processMore; {
 		processMore = false
 
 		for i := 0; i < len(out)-1; i++ {
