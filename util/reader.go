@@ -3,12 +3,16 @@ package util
 import (
 	"bufio"
 	"os"
+	"path/filepath"
 )
 
 func ReadLines(path string) []string {
-	file, err := os.Open(path)
+	file, err := os.Open(filepath.Base(path))
 	if err != nil {
-		panic(err)
+		file, err = os.Open(path)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	defer file.Close()
