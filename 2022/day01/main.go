@@ -14,42 +14,30 @@ func main() {
 }
 
 func p1() int {
-	var sum, biggest int
-
-	for _, l := range lines {
-		if l == "" {
-			biggest = util.Max(biggest, sum)
-
-			sum = 0
-
-			continue
-		}
-
-		sum += util.Atoi(l)
-	}
-
-	return biggest
+	return solve()[0]
 }
 
 func p2() int {
-	var arr []int
-	var sum int
+	arr := solve()
+	return arr[0] + arr[1] + arr[2]
+}
+
+func solve() []int {
+	arr := []int{0}
 
 	for _, l := range lines {
 		if l == "" {
-			arr = append(arr, sum)
-
-			sum = 0
+			arr = append(arr, 0)
 
 			continue
 		}
 
-		sum += util.Atoi(l)
+		arr[len(arr)-1] += util.Atoi(l)
 	}
 
 	slices.SortFunc(arr, func(a, b int) bool {
 		return a > b
 	})
 
-	return arr[0] + arr[1] + arr[2]
+	return arr
 }
