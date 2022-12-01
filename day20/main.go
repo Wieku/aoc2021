@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-var lines = util.ReadLines("day20/input.txt")
+var lines = util.ReadLines("day21/input.txt")
 
 var (
 	substitution []uint8

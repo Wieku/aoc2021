@@ -90,21 +90,20 @@ func abs(a int) int {
 }
 
 func main() {
-	p1()
-	p2()
+	fmt.Println("Part 1:", p1())
+	fmt.Println("Part 2:", p2())
 }
 
-func p1() {
+func p1() int {
 	sum := numbers[0]
 	for _, k := range numbers[1:] {
 		sum = add(sum, k)
 	}
 
-	fmt.Println("Part 1:", magnitude(sum))
+	return magnitude(sum)
 }
 
-func p2() {
-	maxMag := 0
+func p2() (maxMag int) {
 	for i, k := range numbers[:len(numbers)-1] {
 		for _, l := range numbers[i+1:] {
 			mag := magnitude(add(k, l))
@@ -115,7 +114,7 @@ func p2() {
 		}
 	}
 
-	fmt.Println("Part 2:", maxMag)
+	return
 }
 
 func add(in1, in2 []leaf) (out []leaf) {
