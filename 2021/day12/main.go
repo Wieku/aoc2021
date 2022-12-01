@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-var lines = util.ReadLines("day12/input.txt")
+var lines = util.ReadLines("2021/day12/input.txt")
 
 var nodes map[string][]string
 

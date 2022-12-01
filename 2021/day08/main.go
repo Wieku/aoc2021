@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day08/input.txt")
+var lines = util.ReadLines("2021/day08/input.txt")
 
 var data [][2][]string
 

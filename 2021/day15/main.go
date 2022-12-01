@@ -37,7 +37,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 }
 
-var lines = util.ReadLines("day15/input.txt")
+var lines = util.ReadLines("2021/day15/input.txt")
 
 var data [][]int
 

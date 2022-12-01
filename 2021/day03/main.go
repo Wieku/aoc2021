@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var lines = util.ReadLines("day03/input.txt")
+var lines = util.ReadLines("2021/day03/input.txt")
 
 func main() {
 	p1()

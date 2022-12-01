@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day18/input.txt")
+var lines = util.ReadLines("2021/day18/input.txt")
 
 type leaf struct {
 	depth int

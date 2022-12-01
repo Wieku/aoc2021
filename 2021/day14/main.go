@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day14/input.txt")
+var lines = util.ReadLines("2021/day14/input.txt")
 
 var startSequence string
 var substitutions = make(map[string]string)

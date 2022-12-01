@@ -14,7 +14,7 @@ type vec struct {
 var board = make(map[vec]int)
 var board2 = make(map[vec]int)
 
-var lines = util.ReadLines("day05/input.txt")
+var lines = util.ReadLines("2021/day05/input.txt")
 
 func main() {
 	r, err := regexp.Compile("(,| -> )")

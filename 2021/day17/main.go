@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day17/input.txt")
+var lines = util.ReadLines("2021/day17/input.txt")
 
 var minX, maxX, minY, maxY int
 

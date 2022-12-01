@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var lines = util.ReadLines("day16/input.txt")
+var lines = util.ReadLines("2021/day16/input.txt")
 
 type bitfield []uint64
 

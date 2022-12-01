@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var lines = util.ReadLines("day01/input.txt")
+var lines = util.ReadLines("2021/day01/input.txt")
 
 func main() {
 	vals := make([]int, len(lines))

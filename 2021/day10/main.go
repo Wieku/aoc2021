@@ -6,7 +6,7 @@ import (
 	"sort"
 )
 
-var lines = util.ReadLines("day10/input.txt")
+var lines = util.ReadLines("2021/day10/input.txt")
 
 func main() {
 	lut := map[rune]rune{

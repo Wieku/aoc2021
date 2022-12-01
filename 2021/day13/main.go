@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var lines = util.ReadLines("day13/input.txt")
+var lines = util.ReadLines("2021/day13/input.txt")
 
 type vec struct {
 	x, y int
