@@ -3,18 +3,17 @@ package main
 import (
 	"aoc2021/util"
 	"fmt"
-	"strings"
 )
 
 var lines = util.ReadLines("2022/day02/input.txt")
 
-var scoreMap = map[string]int{
-	"A": 1,
-	"B": 2,
-	"C": 3,
-	"X": 1,
-	"Y": 2,
-	"Z": 3,
+var scoreMap = map[uint8]int{
+	'A': 1,
+	'B': 2,
+	'C': 3,
+	'X': 1,
+	'Y': 2,
+	'Z': 3,
 }
 
 func main() {
@@ -26,10 +25,8 @@ func p1() int {
 	score := 0
 
 	for _, l := range lines {
-		choices := strings.Split(l, " ")
-
-		eS := scoreMap[choices[0]]
-		uS := scoreMap[choices[1]]
+		eS := scoreMap[l[0]]
+		uS := scoreMap[l[2]]
 
 		if eS == uS {
 			score += 3
@@ -47,20 +44,18 @@ func p2() int {
 	score := 0
 
 	for _, l := range lines {
-		choices := strings.Split(l, " ")
+		eS := scoreMap[l[0]]
 
-		eS := scoreMap[choices[0]]
-
-		switch choices[1] {
-		case "X":
+		switch l[2] {
+		case 'X':
 			if eS == 1 {
 				score += 3
 			} else {
 				score += eS - 1
 			}
-		case "Y":
+		case 'Y':
 			score += 3 + eS
-		case "Z":
+		case 'Z':
 			score += 6
 
 			if eS == 3 {
