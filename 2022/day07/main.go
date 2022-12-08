@@ -4,7 +4,6 @@ import (
 	"aoc2021/util"
 	"fmt"
 	"golang.org/x/exp/slices"
-	"strings"
 )
 
 var lines = util.ReadLines("2022/day07/input.txt")
@@ -20,7 +19,19 @@ type node struct {
 
 var masterNode *node
 
-func init() {
+func parseIntUntil(st string) (side, begin int) {
+	for i := 0; i < len(st); i++ {
+		if st[i] == ' ' {
+			return side, i + 1
+		}
+
+		side = side*10 + int(st[i]-'0')
+	}
+
+	return
+}
+
+func parse() {
 	masterNode = &node{
 		isDir: true,
 		size:  -1,
@@ -33,28 +44,34 @@ func init() {
 		line := lines[i]
 
 		if line[0] != '$' {
-			spl := strings.Split(line, " ")
+			var newNode *node
 
-			newNode := &node{
-				previous: currentNode,
-				isDir:    spl[0] == "dir",
-				size:     -1,
-				name:     spl[1],
-			}
+			if line[0] == 'd' {
+				newNode = &node{
+					previous: currentNode,
+					isDir:    true,
+					size:     -1,
+					name:     line[4:],
+				}
+			} else {
+				siz, nPos := parseIntUntil(line)
 
-			if spl[0] != "dir" {
-				newNode.size = util.Atoi(spl[0])
+				newNode = &node{
+					previous: currentNode,
+					size:     siz,
+					name:     line[nPos:],
+				}
 			}
 
 			currentNode.leafs = append(currentNode.leafs, newNode)
-		} else if strings.HasPrefix(line, "$ cd ") {
-			sec := strings.TrimPrefix(line, "$ cd ")
-
-			if sec == "/" {
+		} else if line[2] == 'c' {
+			if line[5] == '/' {
 				currentNode = masterNode
-			} else if sec == ".." {
+			} else if line[5] == '.' {
 				currentNode = currentNode.previous
 			} else {
+				sec := line[5:]
+
 				for _, cn := range currentNode.leafs {
 					if cn.name == sec {
 						currentNode = cn
@@ -72,6 +89,7 @@ func main() {
 }
 
 func p1() (sum int) {
+	parse()
 	_, nds := traverseForSizes(masterNode)
 
 	for _, cI := range nds {
@@ -84,6 +102,7 @@ func p1() (sum int) {
 }
 
 func p2() int {
+	parse()
 	sum, nds := traverseForSizes(masterNode)
 
 	over := sum - (70000000 - 30000000)
