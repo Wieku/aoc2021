@@ -95,104 +95,100 @@ func p2() (sum int) {
 	return solve2(aId, aId, 26, 26, opened, valves, m)
 }
 
-func solve(cNode, time int, opened uint64, valves []*valve, distances [][]int) int {
-	if time <= 1 || opened == (1<<len(valves))-1 {
+func solve(currentValve, currentTime int, opened uint64, valves []*valve, distances [][]int) int {
+	if currentTime <= 1 || opened == (1<<len(valves))-1 {
 		return 0
 	}
 
-	a := 0
+	maxSteam := 0
 
-	for nId, dist := range distances[cNode] {
-		if opened&(1<<nId) == 0 {
-			t := time - dist - 1
+	for nextValve, dist := range distances[currentValve] {
+		if opened&(1<<nextValve) == 0 {
+			nextTime := currentTime - dist - 1
 
-			cRate := t * valves[nId].rate
+			steam := nextTime * valves[nextValve].rate
 
-			cRate += solve(nId, t, opened|(1<<nId), valves, distances)
+			steam += solve(nextValve, nextTime, opened|(1<<nextValve), valves, distances)
 
-			if cRate > a {
-				a = cRate
-			}
+			maxSteam = util.Max(maxSteam, steam)
 		}
 	}
 
-	return a
+	return maxSteam
 }
 
-func solve2(cNode1, cNode2, time1, time2 int, opened uint64, valves []*valve, distances [][]int) int {
-	if (time1 <= 1 && time2 <= 1) || opened == (1<<len(valves))-1 {
+func solve2(human, elephant, currentTimeH, currentTimeE int, opened uint64, valves []*valve, distances [][]int) int {
+	if (currentTimeH <= 1 && currentTimeE <= 1) || opened == (1<<len(valves))-1 {
 		return 0
 	}
 
-	var v1, v2 []int
+	var valvesH, valvesE []int
 
-	// Grab only accessible valves
+	// Grab only accessible and closed valves
 	for i := 0; i < len(valves); i++ {
 		if opened&(1<<i) == 0 {
-			if time1-distances[cNode1][i]-1 > 0 {
-				v1 = append(v1, i)
+			if currentTimeH-distances[human][i]-1 > 0 {
+				valvesH = append(valvesH, i)
 			}
 
-			if time2-distances[cNode2][i]-1 > 0 {
-				v2 = append(v2, i)
+			if currentTimeE-distances[elephant][i]-1 > 0 {
+				valvesE = append(valvesE, i)
 			}
 		}
 	}
 
-	if len(v1) == 0 && len(v2) == 0 {
+	if len(valvesH) == 0 && len(valvesE) == 0 { // No accessible valves left
 		return 0
 	}
 
-	a := 0
+	maxSteam := 0
 
-	if len(v1) == 1 && len(v2) == 1 && v1[0] == v2[0] {
-		nId := v1[0]
+	if len(valvesH) == 1 && len(valvesE) == 1 && valvesH[0] == valvesE[0] { // Same final valve, first to reach wins
+		nextValve := valvesH[0]
 
-		cR1 := (time1 - distances[cNode1][nId] - 1) * valves[nId].rate
-		cR2 := (time2 - distances[cNode2][nId] - 1) * valves[nId].rate
+		steamH := (currentTimeH - distances[human][nextValve] - 1) * valves[nextValve].rate
+		steamE := (currentTimeE - distances[elephant][nextValve] - 1) * valves[nextValve].rate
 
-		a = util.Max(a, util.Max(cR1, cR2))
-	} else if len(v1) > 0 && len(v2) == 0 {
-		for _, nId1 := range v1 {
-			t1 := time1 - distances[cNode1][nId1] - 1
-			cR := t1 * valves[nId1].rate
+		maxSteam = util.Max(maxSteam, util.Max(steamH, steamE))
+	} else if len(valvesH) > 0 && len(valvesE) == 0 { // Only human has some closed valves left, get the best path score
+		for _, nextValve := range valvesH {
+			nextTime := currentTimeH - distances[human][nextValve] - 1
+			steam := nextTime * valves[nextValve].rate
 
-			cR += solve(nId1, t1, opened|(1<<nId1), valves, distances)
+			steam += solve(nextValve, nextTime, opened|(1<<nextValve), valves, distances)
 
-			a = util.Max(a, cR)
+			maxSteam = util.Max(maxSteam, steam)
 		}
-	} else if len(v1) == 0 && len(v2) > 0 {
-		for _, nId2 := range v2 {
-			t2 := time2 - distances[cNode2][nId2] - 1
-			cR := t2 * valves[nId2].rate
+	} else if len(valvesH) == 0 && len(valvesE) > 0 { // Only elephant has some closed valves left, get the best path score
+		for _, nextValve := range valvesE {
+			nextTime := currentTimeE - distances[elephant][nextValve] - 1
+			steam := nextTime * valves[nextValve].rate
 
-			cR += solve(nId2, t2, opened|(1<<nId2), valves, distances)
+			steam += solve(nextValve, nextTime, opened|(1<<nextValve), valves, distances)
 
-			a = util.Max(a, cR)
+			maxSteam = util.Max(maxSteam, steam)
 		}
-	} else {
-		for _, nId1 := range v1 {
-			t1 := time1 - distances[cNode1][nId1] - 1
+	} else { // Try all different available valve pairs
+		for _, nextValveH := range valvesH {
+			nextTimeH := currentTimeH - distances[human][nextValveH] - 1
+			steamH := nextTimeH * valves[nextValveH].rate
 
-			cR1 := t1 * valves[nId1].rate
-
-			for _, nId2 := range v2 {
-				if nId1 == nId2 {
+			for _, nextValveE := range valvesE {
+				if nextValveH == nextValveE { // skip if valve is the same
 					continue
 				}
 
-				t2 := time2 - distances[cNode2][nId2] - 1
+				nextTimeE := currentTimeE - distances[elephant][nextValveE] - 1
+				steamE := nextTimeE * valves[nextValveE].rate
 
-				cR2 := t2 * valves[nId2].rate
+				totalSteam := steamH + steamE + solve2(nextValveH, nextValveE, nextTimeH, nextTimeE, opened|(1<<nextValveH)|(1<<nextValveE), valves, distances)
 
-				cR3 := cR1 + cR2 + solve2(nId1, nId2, t1, t2, opened|(1<<nId1)|(1<<nId2), valves, distances)
-
-				a = util.Max(a, cR3)
+				maxSteam = util.Max(maxSteam, totalSteam)
 			}
 		}
 	}
 
-	return a
+	return maxSteam
 }
 
 // Floyd–Warshall algorithm for APSP
