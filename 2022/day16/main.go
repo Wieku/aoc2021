@@ -4,7 +4,6 @@ import (
 	"aoc2021/util"
 	"fmt"
 	"strings"
-	"time"
 )
 
 var lines = util.ReadLines("2022/day16/input.txt")
@@ -77,14 +76,7 @@ func parseValves() (int, []*valve, [][]int) {
 
 func main() {
 	fmt.Println("Part 1:", p1())
-
-	t1 := time.Now()
-
 	fmt.Println("Part 2:", p2())
-
-	t2 := time.Now()
-
-	fmt.Println(t2.Sub(t1))
 }
 
 func p1() (sum int) {
